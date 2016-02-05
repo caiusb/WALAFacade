@@ -19,6 +19,8 @@ libraryDependencies ++= Seq(
   "com.ibm.wala" % "com.ibm.wala.shrike" % "1.3.8",
   "com.ibm.wala" % "com.ibm.wala.util" % "1.3.8",
   "com.ibm.wala" % "com.ibm.wala.core" % "1.3.8",
+  "com.ibm.wala" % "com.ibm.wala.cast" % "1.3.8",
+  "com.ibm.wala" % "com.ibm.wala.cast.java" % "1.3.8")
 
 EclipseKeys.withSource := true
 
