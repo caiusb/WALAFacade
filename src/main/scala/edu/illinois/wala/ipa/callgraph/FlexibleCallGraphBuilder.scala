@@ -9,9 +9,9 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.ibm.wala.ssa.IRFactory
 import com.ibm.wala.classLoader.IMethod
-//import com.ibm.wala.cast.ir.ssa.AstIRFactory
+import com.ibm.wala.cast.ir.ssa.AstIRFactory
 import com.ibm.wala.ssa.DefaultIRFactory
-//import com.ibm.wala.cast.java.ipa.callgraph.AstJavaSSAPropagationCallGraphBuilder
+import com.ibm.wala.cast.java.ipa.callgraph.AstJavaSSAPropagationCallGraphBuilder
 
 object FlexibleCallGraphBuilder {
   def apply(entrypoint: (String, String), dependencies: Iterable[Dependency])(implicit config: Config): AbstractCallGraphBuilder =
@@ -40,9 +40,9 @@ class FlexibleCallGraphBuilder(
   // Constructors
   def this(cha: ClassHierarchy, options: AnalysisOptions, irFactory: IRFactory[IMethod]) = this(cha, options, new AnalysisCache(irFactory), new DefaultPointerKeyFactory())
   def this(options: AnalysisOptions) = this(options.cha, options,
-//    if (options.isSourceAnalysis)
-//      AstIRFactory.makeDefaultFactory()
-//    else
+    if (options.isSourceAnalysis)
+      AstIRFactory.makeDefaultFactory()
+    else
       new DefaultIRFactory())
 
   def this()(implicit config: Config) = this(AnalysisOptions())
