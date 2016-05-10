@@ -28,14 +28,22 @@ libraryDependencies ++= Seq(
 
 EclipseKeys.withSource := true
 
-publishMavenStyle := true
+publishMavenStyle := false
+
+//publishTo := {
+//  val nexus = "https://oss.sonatype.org/"
+//  if (isSnapshot.value)
+//    Some("snapshots" at nexus + "content/repositories/snapshots")
+//  else
+//    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+//}
 
 publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+	val prefix = if (isSnapshot.value)
+		"snapshots"
+	else
+		"releases"
+	Some("Mine" at "s3://"+prefix+".ivy.brindescu.com")
 }
 
 publishArtifact in Test := false
