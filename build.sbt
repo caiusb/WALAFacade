@@ -13,6 +13,8 @@ resolvers ++= Seq("Local Maven Repository" at "file://"+Path.userHome.absolutePa
 	"my snapshots" at "http://snapshots.ivy.brindescu.com",
 	"my releases" at "http://releases.ivy.brindescu.com")
 
+resolvers += "Caius" at "http://releases.ivy.brindescu.com" // for com.ibm.wala.cast.java
+
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 
 libraryDependencies ++= Seq(
