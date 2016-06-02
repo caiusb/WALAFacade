@@ -40,7 +40,7 @@ trait TypeAliases {
   type ArrayLoadI = SSAArrayLoadInstruction
   type ArrayReferenceI = SSAArrayReferenceInstruction
 
-  type InvokeI = SSAInvokeInstruction
+  type InvokeI = SSAAbstractInvokeInstruction
 
   type MonitorI = SSAMonitorInstruction
 
