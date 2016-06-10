@@ -1,15 +1,15 @@
 package edu.illinois.wala.ipa.callgraph
 
-import com.ibm.wala.cast.java.translator.jdt.JDTClassLoaderFactory
-import com.ibm.wala.cast.java.translator.jdt.ejc.EJCClassLoaderFactory
 import com.ibm.wala.classLoader.{JavaLanguage, Language}
 import com.ibm.wala.ipa.callgraph.Entrypoint
 import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint
 import com.ibm.wala.ipa.cha.ClassHierarchy
 import com.ibm.wala.types.{MethodReference, TypeName, TypeReference}
+import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.collection.JavaConversions._
+
 
 class AnalysisOptions(scope: AnalysisScope, entrypoints: java.lang.Iterable[Entrypoint], val cha: ClassHierarchy, val isSourceAnalysis: Boolean)
   extends com.ibm.wala.ipa.callgraph.AnalysisOptions(scope, entrypoints) {
@@ -26,11 +26,15 @@ object AnalysisOptions {
 
     implicit val scope = AnalysisScope(extraDependencies)
 
-    val classLoaderFactory = new EJCClassLoaderFactory(scope.getExclusions())
-
-    implicit val cha = ClassHierarchy.make(scope, classLoaderFactory, Language.JAVA)
+    implicit val cha = getClassHierarchy
 
     new AnalysisOptions(scope, entrypoints(extraEntrypoints), cha, true) // !srcDep.isEmpty
+  }
+
+  def getClassHierarchy(implicit scope: AnalysisScope): ClassHierarchy = {
+    val classLoaderFactory = new ECJClassLoaderFactory(scope.getExclusions())
+
+    ClassHierarchy.make(scope, classLoaderFactory, Language.JAVA)
   }
 
   def entrypoints(extraEntrypoints: Iterable[(String, String)] = Seq())(
@@ -40,6 +44,12 @@ object AnalysisOptions {
         Some((config.getString("wala.entry.class"), config.getString("wala.entry.method")))
       else
         None
+
+    val multipleEntryPoints =
+      if (config.hasPath("wala.entry.multiple"))
+        config.getConfigList("wala.entry.multiple") map { v => (v.getString("class"), v.getString("method")) }
+      else
+        Seq()
 
     val entryPointsFromPattern =
       if (config.hasPath("wala.entry.signature-pattern")) {
@@ -53,8 +63,8 @@ object AnalysisOptions {
       } else
         Seq()
 
-    val entrypoints = entryPointsFromPattern ++
-      ((extraEntrypoints ++ oneEntryPoint) map { case (klass, method) => makeEntrypoint(klass, method) })
+    val entrypoints = entryPointsFromPattern
+      ((extraEntrypoints ++ oneEntryPoint ++ multipleEntryPoints) map { case (klass, method) => makeEntrypoint(klass, method) })
 
     if (entrypoints.size == 0)
       System.err.println("WARNING: no entrypoints")
