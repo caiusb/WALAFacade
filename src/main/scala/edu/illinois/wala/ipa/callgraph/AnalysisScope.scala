@@ -47,12 +47,10 @@ object AnalysisScope {
   val Extension = com.ibm.wala.ipa.callgraph.AnalysisScope.EXTENSION
   val Application = com.ibm.wala.ipa.callgraph.AnalysisScope.APPLICATION
   val Synthetic = com.ibm.wala.ipa.callgraph.AnalysisScope.SYNTHETIC
-  //  val Source = JavaSourceAnalysisScope.SOURCE.getName()
+    val Source = JavaSourceAnalysisScope.SOURCE.getName()
   def apply(jreLibPath: String, exclusions: String) = new AnalysisScope(jreLibPath, exclusions)
 
-  val allScopes = List(Application,
-    //      Source, 
-    Synthetic, Extension, Primordial)
+  val allScopes = List(Application, Source, Synthetic, Extension, Primordial)
 
   def apply(extraDependencies: Iterable[Dependency] = Seq())(implicit config: Config) = {
     val binDep = if (config.hasPath("wala.dependencies.binary"))
