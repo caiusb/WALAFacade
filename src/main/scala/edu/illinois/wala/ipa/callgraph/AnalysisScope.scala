@@ -16,6 +16,7 @@ import java.util.Collections
 import com.ibm.wala.classLoader.Language
 import AnalysisScope._
 import java.io.ByteArrayInputStream
+import edu.illinois.wala.ipa.callgraph.ConfigConstants._
 
 import scala.Array.canBuildFrom
 import com.ibm.wala.classLoader.SourceDirectoryTreeModule
@@ -53,26 +54,27 @@ object AnalysisScope {
   val allScopes = List(Application, Source, Synthetic, Extension, Primordial)
 
   def apply(extraDependencies: Iterable[Dependency] = Seq())(implicit config: Config) = {
-    val binDep = if (config.hasPath("wala.dependencies.binary"))
-      config.getList("wala.dependencies.binary") map { d => Dependency(d.unwrapped.asInstanceOf[String]) }
+
+    val binDep = if (config.hasPath(BinaryDependency))
+      config.getList(BinaryDependency) map { d => Dependency(d.unwrapped.asInstanceOf[String]) }
     else
       List()
 
-    val srcDep = if (config.hasPath("wala.dependencies.source"))
-      config.getList("wala.dependencies.source") map { d => Dependency(d.unwrapped.asInstanceOf[String], DependencyNature.SourceDirectory) }
+    val srcDep = if (config.hasPath(SourceDependency))
+      config.getList(SourceDependency) map { d => Dependency(d.unwrapped.asInstanceOf[String], DependencyNature.SourceDirectory) }
     else
       List()
 
-    val jarDep = if (config.hasPath("wala.dependencies.jar"))
-      config.getList("wala.dependencies.jar") map { d => Dependency(d.unwrapped.asInstanceOf[String], DependencyNature.Jar) }
+    val jarDep = if (config.hasPath(JarDepedency))
+      config.getList(JarDepedency) map { d => Dependency(d.unwrapped.asInstanceOf[String], DependencyNature.Jar) }
     else
       List()
 
     val dependencies = binDep ++ srcDep ++ jarDep ++ extraDependencies
 
-    val jreLibPath = config.getStringOption("wala.jre-lib-path").getOrElse(System.getenv().get("JAVA_HOME") + "/jre/lib/rt.jar")
+    val jreLibPath = config.getStringOption(JRELibPath).getOrElse(System.getenv().get("JAVA_HOME") + "/jre/lib/rt.jar")
 
-    new AnalysisScope(jreLibPath, config.getString("wala.exclusions"), dependencies)
+    new AnalysisScope(jreLibPath, config.getString(Exclusions), dependencies)
   }
 }
 

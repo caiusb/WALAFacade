@@ -7,6 +7,7 @@ import com.ibm.wala.ipa.cha.ClassHierarchy
 import com.ibm.wala.types.{MethodReference, TypeName, TypeReference}
 import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
 import com.typesafe.config.{Config, ConfigFactory}
+import edu.illinois.wala.ipa.callgraph.ConfigConstants._
 
 import scala.collection.JavaConversions._
 
@@ -39,21 +40,23 @@ object AnalysisOptions {
 
   def entrypoints(extraEntrypoints: Iterable[(String, String)] = Seq())(
     implicit config: Config, cha: ClassHierarchy, scope: AnalysisScope) = {
+
     val oneEntryPoint =
-      if (config.hasPath("wala.entry.class"))
-        Some((config.getString("wala.entry.class"), config.getString("wala.entry.method")))
-      else
-        None
+    if (config.hasPath(EntryClass)) {
+        Some((config.getString(EntryClass), config.getString(EntryMethod)))
+      }
+    else
+    None
 
     val multipleEntryPoints =
-      if (config.hasPath("wala.entry.multiple"))
-        config.getConfigList("wala.entry.multiple") map { v => (v.getString("class"), v.getString("method")) }
+      if (config.hasPath(MultipleEntryPoints))
+        config.getConfigList(MultipleEntryPoints) map { v => (v.getString("class"), v.getString("method")) }
       else
         Seq()
 
     val entryPointsFromPattern =
-      if (config.hasPath("wala.entry.signature-pattern")) {
-        val signaturePattern = config.getString("wala.entry.signature-pattern")
+      if (config.hasPath(EntrySignaturePattern)) {
+        val signaturePattern = config.getString(EntrySignaturePattern)
         val matchingMethods = cha.iterator() flatMap { c =>
           c.getAllMethods() filter { m =>
             m.getSignature() matches signaturePattern
