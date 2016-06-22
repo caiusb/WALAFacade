@@ -1,11 +1,11 @@
 package edu.illinois.wala.ipa.callgraph
 
-import com.ibm.wala.classLoader.{JavaLanguage, Language}
+import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
+import com.ibm.wala.classLoader.Language
 import com.ibm.wala.ipa.callgraph.Entrypoint
 import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint
 import com.ibm.wala.ipa.cha.ClassHierarchy
 import com.ibm.wala.types.{MethodReference, TypeName, TypeReference}
-import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
 import com.typesafe.config.{Config, ConfigFactory}
 import edu.illinois.wala.ipa.callgraph.ConfigConstants._
 
