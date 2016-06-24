@@ -32,6 +32,8 @@ class S[+J <: I](val n: N, val i: J) extends PrettyPrintable {
 
   lazy val m = n.m
 
+  lazy val c = n.m.getDeclaringClass
+
   lazy val sourceFilePath = m.getDeclaringClass().sourceFilePath
 
   lazy val lineNo = irNo flatMap { m.lineNo(_) }
