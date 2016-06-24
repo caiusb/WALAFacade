@@ -66,7 +66,7 @@ object AnalysisOptions {
       } else
         Seq()
 
-    val entrypoints = entryPointsFromPattern
+    val entrypoints = entryPointsFromPattern ++
       ((extraEntrypoints ++ oneEntryPoint ++ multipleEntryPoints) map { case (klass, method) => makeEntrypoint(klass, method) })
 
     if (entrypoints.size == 0)
