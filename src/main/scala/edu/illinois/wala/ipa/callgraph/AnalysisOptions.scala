@@ -3,7 +3,7 @@ package edu.illinois.wala.ipa.callgraph
 import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
 import com.ibm.wala.classLoader.Language
 import com.ibm.wala.ipa.callgraph.Entrypoint
-import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint
+import com.ibm.wala.ipa.callgraph.impl.{DefaultEntrypoint, SubtypesEntrypoint}
 import com.ibm.wala.ipa.cha.ClassHierarchy
 import com.ibm.wala.types.{MethodReference, TypeName, TypeReference}
 import com.typesafe.config.{Config, ConfigFactory}
@@ -95,7 +95,7 @@ object AnalysisOptions {
       .map { MethodReference.findOrCreate(_, entryMethod.substring(0, entryMethod.indexOf('(')), entryMethod.substring(entryMethod.indexOf('('))) }
       .find { cha.resolveMethod(_) != null } getOrElse { throw new Error("Could not find entrypoint: " + entryClass + "#" + entryMethod + " anywhere in loaded classes.") }
 
-    new DefaultEntrypoint(methodReference, cha)
+    new SubtypesEntrypoint(methodReference, cha)
   }
 
 }
