@@ -4,6 +4,7 @@ import com.ibm.wala.analysis.pointers.HeapGraph
 import com.ibm.wala.cast.ipa.callgraph.AstContextInsensitiveSSAContextInterpreter
 import com.ibm.wala.ipa.callgraph.{AnalysisCache, CallGraph, ContextSelector}
 import com.ibm.wala.ipa.callgraph.impl.{ContextInsensitiveSelector, Util}
+import com.ibm.wala.ipa.callgraph.propagation.InstanceKeyFactory
 import com.ibm.wala.ipa.callgraph.propagation.cfa.{DefaultSSAInterpreter, ZeroXInstanceKeys}
 import com.ibm.wala.ipa.cha.{ClassHierarchy, IClassHierarchy}
 
@@ -28,7 +29,7 @@ trait AbstractCallGraphBuilder {
   def policy = { import ZeroXInstanceKeys._;  ALLOCATIONS }
   protected def cs: ContextSelector = new ContextInsensitiveSelector() // new DefaultContextSelector(_options, _cha)
   protected def contextInterpreter = defaultInterpreter // new DelegatingSSAContextInterpreter(defaultInterpreter, reflectionInterpreter)
-  protected def instanceKeys = new ZeroXInstanceKeys(_options, _cha, theContextInterpreter, policy)
+  protected def instanceKeys: InstanceKeyFactory = new ZeroXInstanceKeys(_options, _cha, theContextInterpreter, policy)
 
   // the rest...
   val theContextInterpreter = contextInterpreter
