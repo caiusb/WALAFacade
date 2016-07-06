@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
 
 EclipseKeys.withSource := true
 
-publishMavenStyle := false
+publishMavenStyle := true
 
 //publishTo := {
 //  val nexus = "https://oss.sonatype.org/"
