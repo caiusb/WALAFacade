@@ -68,7 +68,7 @@ object AnalysisOptions {
 
     val entrypoints = entryPointsFromPattern ++
       ((extraEntrypoints ++ oneEntryPoint ++ multipleEntryPoints) map { case (klass, method) => makeEntrypoint(klass, method) })
-        .filterNot { _ == null }
+        .filter { _.isDefined }.map{ _.get }
 
     if (entrypoints.size == 0)
       System.err.println("WARNING: no entrypoints")
@@ -89,14 +89,14 @@ object AnalysisOptions {
 
   val mainMethod = "main([Ljava/lang/String;)V"
 
-  private def makeEntrypoint(entryClass: String, entryMethod: String)(implicit scope: AnalysisScope, cha: ClassHierarchy): Entrypoint = {
-    val methodReference = AnalysisScope.allScopes.toStream
+  private def makeEntrypoint(entryClass: String, entryMethod: String)(implicit scope: AnalysisScope, cha: ClassHierarchy): Option[Entrypoint] = 
+    AnalysisScope.allScopes.toStream
       .map { scope.getLoader(_) }
       .map { TypeReference.findOrCreate(_, TypeName.string2TypeName(entryClass)) }
       .map { MethodReference.findOrCreate(_, entryMethod.substring(0, entryMethod.indexOf('(')), entryMethod.substring(entryMethod.indexOf('('))) }
-      .find { cha.resolveMethod(_) != null } getOrElse { null }//throw new Error("Could not find entrypoint: " + entryClass + "#" + entryMethod + " anywhere in loaded classes.") }
-
-    new SubtypesEntrypoint(methodReference, cha)
-  }
+      .find { cha.resolveMethod(_) != null } match {
+        case Some(m) => Some(new SubtypesEntrypoint(m, cha))
+        case None => None
+      }
 
 }
