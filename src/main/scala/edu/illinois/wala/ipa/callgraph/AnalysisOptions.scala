@@ -68,6 +68,7 @@ object AnalysisOptions {
 
     val entrypoints = entryPointsFromPattern ++
       ((extraEntrypoints ++ oneEntryPoint ++ multipleEntryPoints) map { case (klass, method) => makeEntrypoint(klass, method) })
+        .filterNot { _ == null }
 
     if (entrypoints.size == 0)
       System.err.println("WARNING: no entrypoints")
@@ -93,7 +94,7 @@ object AnalysisOptions {
       .map { scope.getLoader(_) }
       .map { TypeReference.findOrCreate(_, TypeName.string2TypeName(entryClass)) }
       .map { MethodReference.findOrCreate(_, entryMethod.substring(0, entryMethod.indexOf('(')), entryMethod.substring(entryMethod.indexOf('('))) }
-      .find { cha.resolveMethod(_) != null } getOrElse { throw new Error("Could not find entrypoint: " + entryClass + "#" + entryMethod + " anywhere in loaded classes.") }
+      .find { cha.resolveMethod(_) != null } getOrElse { null }//throw new Error("Could not find entrypoint: " + entryClass + "#" + entryMethod + " anywhere in loaded classes.") }
 
     new SubtypesEntrypoint(methodReference, cha)
   }
