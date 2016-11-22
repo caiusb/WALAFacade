@@ -89,9 +89,8 @@ object AnalysisOptions {
 
   val mainMethod = "main([Ljava/lang/String;)V"
 
-  private def makeEntrypoint(entryClass: String, entryMethod: String)(implicit scope: AnalysisScope, cha: ClassHierarchy): Option[Entrypoint] = 
-    AnalysisScope.allScopes.toStream
-      .map { scope.getLoader(_) }
+  private def makeEntrypoint(entryClass: String, entryMethod: String)(implicit scope: AnalysisScope, cha: ClassHierarchy): Option[Entrypoint] =
+    scope.getLoaders.toStream
       .map { TypeReference.findOrCreate(_, TypeName.string2TypeName(entryClass)) }
       .map { MethodReference.findOrCreate(_, entryMethod.substring(0, entryMethod.indexOf('(')), entryMethod.substring(entryMethod.indexOf('('))) }
       .find { cha.resolveMethod(_) != null } match {
