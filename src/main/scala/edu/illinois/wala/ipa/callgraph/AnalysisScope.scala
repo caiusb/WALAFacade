@@ -39,7 +39,7 @@ object AnalysisScope {
   val Extension = com.ibm.wala.ipa.callgraph.AnalysisScope.EXTENSION
   val Application = com.ibm.wala.ipa.callgraph.AnalysisScope.APPLICATION
   val Synthetic = com.ibm.wala.ipa.callgraph.AnalysisScope.SYNTHETIC
-    val Source = JavaSourceAnalysisScope.SOURCE.getName()
+  val Source = JavaSourceAnalysisScope.SOURCE.getName()
   def apply(jreLibPath: String, exclusions: String) = new AnalysisScope(jreLibPath, exclusions)
 
   val allScopes = List(Application, Source, Synthetic, Extension, Primordial)
@@ -122,16 +122,16 @@ class AnalysisScope(jreLibPath: String, exclusions: String, dependencies: Iterab
 
   // stuff for source frontend below
 
-    def addSourceDependency(directory: String, analysisScope: Atom = Application) {
-      loadersByName.put(JavaSourceAnalysisScope.SOURCE.getName(), JavaSourceAnalysisScope.SOURCE);
-      setLoaderImpl(JavaSourceAnalysisScope.SOURCE, "com.ibm.wala.cast.java.translator.jdt.ejc.EJCSourceLoaderImpl");
-      initSynthetic(JavaSourceAnalysisScope.SOURCE)
-      //    debug("Binary: " + directory);
-      val sd = getFile(directory);
-      assert(sd.exists(), "dependency \"" + directory + "\" not found")
-      assert(sd.isDirectory(), "dependency \"" + directory + "\" not a directory")
-      addToScope(getLoader(analysisScope), new SourceDirectoryTreeModule(sd));
-    }
+  def addSourceDependency(directory: String, analysisScope: Atom = Application) {
+    loadersByName.put(JavaSourceAnalysisScope.SOURCE.getName(), JavaSourceAnalysisScope.SOURCE);
+    setLoaderImpl(JavaSourceAnalysisScope.SOURCE, "com.ibm.wala.cast.java.translator.jdt.ejc.EJCSourceLoaderImpl");
+    initSynthetic(JavaSourceAnalysisScope.SOURCE)
+    //    debug("Binary: " + directory);
+    val sd = getFile(directory);
+    assert(sd.exists(), "dependency \"" + directory + "\" not found")
+    assert(sd.isDirectory(), "dependency \"" + directory + "\" not a directory")
+    addToScope(getLoader(analysisScope), new SourceDirectoryTreeModule(sd));
+  }
 
   override def addToScope(loader: ClassLoaderReference, m: Module) {
         if (m.isInstanceOf[SourceDirectoryTreeModule] && loader.equals(ClassLoaderReference.Application)) {
