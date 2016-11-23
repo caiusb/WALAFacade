@@ -5,9 +5,9 @@ version := "0.1.3-SNAPSHOT"
 
 organization := "edu.illinois.wala"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.0"
 
-crossScalaVersions := Seq("2.10.5", "2.11.6")
+crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.0")
 
 resolvers ++= Seq("Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
 	"my snapshots" at "http://snapshots.ivy.brindescu.com",
