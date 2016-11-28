@@ -3,7 +3,7 @@ package edu.illinois.wala.ipa.callgraph
 import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
 import com.ibm.wala.classLoader.Language
 import com.ibm.wala.ipa.callgraph.Entrypoint
-import com.ibm.wala.ipa.callgraph.impl.{DefaultEntrypoint, SubtypesEntrypoint}
+import com.ibm.wala.ipa.callgraph.impl.{ArgumentTypeEntrypoint, DefaultEntrypoint, SubtypesEntrypoint}
 import com.ibm.wala.ipa.cha.ClassHierarchy
 import com.ibm.wala.types.{MethodReference, TypeName, TypeReference}
 import com.typesafe.config.{Config, ConfigFactory}
@@ -94,7 +94,7 @@ object AnalysisOptions {
       .map { TypeReference.findOrCreate(_, TypeName.string2TypeName(entryClass)) }
       .map { MethodReference.findOrCreate(_, entryMethod.substring(0, entryMethod.indexOf('(')), entryMethod.substring(entryMethod.indexOf('('))) }
       .find { cha.resolveMethod(_) != null } match {
-        case Some(m) => Some(new SubtypesEntrypoint(m, cha))
+        case Some(m) => Some(new ArgumentTypeEntrypoint(cha.resolveMethod(m), cha))
         case None => None
       }
 
