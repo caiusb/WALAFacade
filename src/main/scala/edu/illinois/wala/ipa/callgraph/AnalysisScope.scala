@@ -86,6 +86,8 @@ class AnalysisScope(jreLibPath: String, exclusions: String, dependencies: Iterab
   import AnalysisScope._
   import DependencyNature._
 
+  lazy val sourceLoader = new ClassLoaderReference(Source, Language.JAVA.getName, getSyntheticLoader)
+
   def this(jreLibPath: String, exclusions: String) = this(jreLibPath, exclusions, Seq())
 
   initForJava()
@@ -123,9 +125,9 @@ class AnalysisScope(jreLibPath: String, exclusions: String, dependencies: Iterab
   // stuff for source frontend below
 
   def addSourceDependency(directory: String, analysisScope: Atom = Application) {
-    loadersByName.put(JavaSourceAnalysisScope.SOURCE.getName(), JavaSourceAnalysisScope.SOURCE);
+    loadersByName.put(JavaSourceAnalysisScope.SOURCE.getName(), sourceLoader);
     setLoaderImpl(JavaSourceAnalysisScope.SOURCE, "com.ibm.wala.cast.java.translator.jdt.ejc.EJCSourceLoaderImpl");
-    initSynthetic(JavaSourceAnalysisScope.SOURCE)
+//    initSynthetic(JavaSourceAnalysisScope.SOURCE)
     //    debug("Binary: " + directory);
     val sd = getFile(directory);
     assert(sd.exists(), "dependency \"" + directory + "\" not found")
