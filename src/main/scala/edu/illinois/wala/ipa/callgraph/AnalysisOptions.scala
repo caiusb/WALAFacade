@@ -1,10 +1,10 @@
 package edu.illinois.wala.ipa.callgraph
 
-import com.ibm.wala.cast.java.translator.jdt.ejc.ECJClassLoaderFactory
+import com.ibm.wala.cast.java.translator.jdt.ecj.ECJClassLoaderFactory
 import com.ibm.wala.classLoader.Language
 import com.ibm.wala.ipa.callgraph.Entrypoint
-import com.ibm.wala.ipa.callgraph.impl.{ArgumentTypeEntrypoint, DefaultEntrypoint, SubtypesEntrypoint}
-import com.ibm.wala.ipa.cha.ClassHierarchy
+import com.ibm.wala.ipa.callgraph.impl.DefaultEntrypoint
+import com.ibm.wala.ipa.cha.{ClassHierarchy, ClassHierarchyFactory}
 import com.ibm.wala.types.{MethodReference, TypeName, TypeReference}
 import com.typesafe.config.{Config, ConfigFactory}
 import edu.illinois.wala.ipa.callgraph.ConfigConstants._
@@ -36,7 +36,7 @@ object AnalysisOptions {
   def getClassHierarchy(implicit scope: AnalysisScope): ClassHierarchy = {
     val classLoaderFactory = new ECJClassLoaderFactory(scope.getExclusions())
 
-    ClassHierarchy.make(scope, classLoaderFactory, Language.JAVA)
+    ClassHierarchyFactory.make(scope, classLoaderFactory, Language.JAVA)
   }
 
   def entrypoints(extraEntrypoints: Iterable[(String, String)] = Seq())(
